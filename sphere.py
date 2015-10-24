@@ -27,14 +27,18 @@ def rotatePointAroundUnitVector(point, unitVector, angle, clockwise=True):
 def rotatePointDifferent(point, unitVector, angle):
     return point*cos(angle) + unitVector.cross_product(point)*sin(angle) + unitVector * (unitVector.dot_product(point)) * (1 - cos(angle))
 
+# that's the bearing
 b = rotatePointAroundUnitVector(t, p, theta, clockwise=True).simplify_full()
 
+# this is the new coordinate
 n = rotatePointAroundUnitVector(p, crossMatrix(b)*p, delta, clockwise=False).simplify_full()
-psi_n = arcsin(n[1]).simplify_full()
-lam_n = (arccos(n[2]/cos(psi_n))).simplify_full()
+psi_n = asin(n[1]).simplify_full()
+lam_n = (acos(n[2]/cos(psi_n))).simplify_full()
 
-print(psi_n)
-print(lam_n)
+print("psi_new", str(psi_n))
+print("lam_new", str(lam_n))
+#import inspect
+#print(inspect.getfile(lam_n.__str__))
 
 # psi = 53 N
 # lam = 22 E
@@ -60,17 +64,5 @@ def evaluateCoords(kwargs):
     print("lam_n", lam_n.subs(**kwargs).n())
     print("lam_n_deg", lam_n.subs(**kwargs).n()*rtd)
 
+#uncomment to test moving in a random direction
 evaluateCoords(kwargs_random)
-#evaluateCoords({"lam":0.0, "psi":0, "theta":3.14/2, "delta":3.14})
-#evaluateCoords({"lam":-pi.n()/4, "psi":pi.n()/4, "theta":1500.190, "delta":8})
-
-#unitVector = vector([-1/2.0, sqrt(2)/2, -1/2.0])
-#p = vector([1/2.0, sqrt(2)/2, 1/2.0])
-#print("p", p.n())
-#print("p.t", (p.dot_product(t)).simplify_full())
-#print("t.north", (p.dot_product(vector([0,1,0]))).simplify_full())
-#print(unitVector.dot_product(p).n())
-#print(rotatePointAroundUnitVector(p, unitVector, pi, clockwise=False).n())
-#print(rotatePointDifferent(p, unitVector, pi).n())
-
-
