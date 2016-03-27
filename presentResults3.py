@@ -19,4 +19,9 @@ with open(sys.argv[1], "r") as sims:
 plt.plot(proportions)
 plt.plot(mrca)
 plt.ylim([0,250])
+
+plt.ylabel('number of advantageous alleles')
+plt.xlabel('generation')
+
+
 plt.show()

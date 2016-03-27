@@ -107,9 +107,9 @@ class s2(object):
     """
     def __init__(self):
         self.sizes = [100]
-        self.repetitions = 200
+        self.repetitions = 1
         self.firstMutationAt = 0
-        self.advantageRange = [1.1]
+        self.advantageRange = [20]
     
     def simulation(self, size, isControl, advantage, repetition):
         filename = p(resultDir, "".join(map(str, ["_typ:sim", "_cla:", type(self).__name__, "_siz:" , size, "_isControl:", isControl ,"_adv:", advantage, "_rep:", repetition,"_sha:", sys.argv[1]])))
@@ -188,6 +188,14 @@ class s2(object):
                         stop = time.clock()
                         print(filename, str(stop - start))
 
+class s3(s2):
+    def __init__(self):
+        self.sizes = [120, 140, 160, 180, 200]
+        self.repetitions = 100
+        self.firstMutationAt = 0
+        self.advantageRange = [1.05, 1.1]
+    
+
 class mrca2(s2):
     def __init__(self):
         pass
@@ -217,6 +225,7 @@ class mrca2(s2):
                         mrcaResults[size] = [T_mrca]
         return mrcaResults
     def run(self):
+        print resultDir
         lsresult = ls(resultDir)
         if "mrca2" not in lsresult:
             samples = self.mrcaCompute(False)
@@ -226,6 +235,19 @@ class mrca2(s2):
                 control = controls[key]
                 with open(p(resultDir, "mrca2"), "w") as r:
                     json.dump({"sample":sample, "control": control}, r)
+
+class proc3(mrca2):
+    def __init__(self):
+        pass
+    def run(self):
+        lsresult = ls(resultDir)
+        totalNumber = []
+        for path in lsresult:
+            fullPath = p(resultDir, path)
+            with open(fullPath) as fp:
+                g = loadGraph(fp)
+                totalNumber.append(len(g["generations"]))
+        print(totalNumber)
 
 class proc2(mrca2):
     def __init__(self):
@@ -256,6 +278,9 @@ if "s1" in sys.argv:
 if "s2" in sys.argv:
     workflow(s2)
 
+if "s3" in sys.argv:
+    workflow(s3)
+
 if "mrca" in sys.argv:
     workflow(mrca)
     
@@ -265,3 +290,11 @@ if "mrca2" in sys.argv:
 if "proc2" in sys.argv:
     workflow(proc2)
 
+if "proc3" in sys.argv:
+    workflow(proc3)
+
+if "proc4" in sys.argv:
+    resultDir = sys.argv[1]
+    workflow(mrca2)
+    workflow(proc2)
+    
