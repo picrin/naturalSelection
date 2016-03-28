@@ -1,1 +1,0 @@
-find results/ | grep 'mrca' | xargs rm
